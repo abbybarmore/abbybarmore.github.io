@@ -200,7 +200,7 @@ rename(&#39;TeamScore&#39; = &#39;W&#39;, &#39;OpponentScore&#39; = &#39;L&#39;)
   geom_point(data=worsegames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +   geom_encircle(data=worsegames, aes(x=TeamScore, y=OpponentScore), s_shape=.05, expand=.02, colour=&quot;red&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="/2021/03/29/worst-games-in-2019-college-football/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>Lastly, add the labels of the title, subtitle, axises and caption. This chart sums up the entire project.</p>
+<p>Lastly, add the labels of the title, subtitle, axis and caption. This chart sums up the entire project.</p>
 <pre class="r"><code>ggplot() + 
   geom_point(data=clean, aes(x=TeamScore, y=OpponentScore), color=&#39;grey&#39;) +
   geom_smooth(data=clean, aes(x=TeamScore, y=OpponentScore), method=&quot;lm&quot;) + 
