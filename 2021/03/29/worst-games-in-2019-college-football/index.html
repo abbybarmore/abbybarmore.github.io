@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.81.0" />
+
+
+<title>Worst Games in 2019 College Football - Abby Barmore&#39;s Github Site</title>
+<meta property="og:title" content="Worst Games in 2019 College Football - Abby Barmore&#39;s Github Site">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/abbybarmore">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/abby_barmore">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">6 min read</span>
+    
+
+    <h1 class="article-title">Worst Games in 2019 College Football</h1>
+
+    
+    <span class="article-date">2021-03-29</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/03/29/worst-games-in-2019-college-football/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>What were the worse games in the 2019 College Football season?</p>
+<p>First we need to clean the data and text in order to use it seamlessly in this coding project.</p>
+<p>First load the libraries.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.0.5     v dplyr   1.0.3
+## v tidyr   1.1.2     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<p>Create a new data frame with the title logs using the information from the CSV file badfootballlogs19.csv</p>
+<pre class="r"><code>logs &lt;-read_csv(&#39;badfootballlogs19.csv&#39;)</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   .default = col_double(),
+##   Date = col_character(),
+##   HomeAway = col_character(),
+##   Opponent = col_character(),
+##   Result = col_character(),
+##   TeamFull = col_character(),
+##   TeamURL = col_character(),
+##   Team = col_character(),
+##   Conference = col_character()
+## )
+## i Use `spec()` for the full column specifications.</code></pre>
+<p>Use the information in logs and then separate the data in the result column into W and L and separate it at the parenthesis. And then rename the W column ‘Outcome’ and the L column ‘Score’. And then show the chart by using head.</p>
+<pre class="r"><code>logs %&gt;% separate(Result, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\(&quot;) %&gt;% 
+  rename(&#39;Outcome&#39; = &#39;W&#39;, &#39;Score&#39; = &#39;L&#39;) %&gt;% 
+  head() </code></pre>
+<pre><code>## # A tibble: 6 x 52
+##    Game Date  HomeAway Opponent Outcome Score PassingCmp PassingAtt PassingPct
+##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1     1 8/24~ N        Miami (~ &quot;W &quot;    24-2~         17         27       63  
+## 2     2 9/7/~ &lt;NA&gt;     Tenness~ &quot;W &quot;    45-0)         30         36       83.3
+## 3     3 9/14~ @        Kentucky &quot;W &quot;    29-2~         21         30       70  
+## 4     4 9/21~ &lt;NA&gt;     Tenness~ &quot;W &quot;    34-3)         24         34       70.6
+## 5     5 9/28~ &lt;NA&gt;     Towson   &quot;W &quot;    38-0)         24         28       85.7
+## 6     6 10/5~ &lt;NA&gt;     Auburn   &quot;W &quot;    24-1~         25         39       64.1
+## # ... with 43 more variables: PassingYds &lt;dbl&gt;, PassingTD &lt;dbl&gt;,
+## #   RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;, RushingTD &lt;dbl&gt;,
+## #   OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;, OffenseAvg &lt;dbl&gt;,
+## #   FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;, FirstDownPen &lt;dbl&gt;,
+## #   FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;, PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;,
+## #   Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;, TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;,
+## #   DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;, DefPassingPct &lt;dbl&gt;,
+## #   DefPassingYds &lt;dbl&gt;, DefPassingTD &lt;dbl&gt;, DefRushingAtt &lt;dbl&gt;,
+## #   DefRushingYds &lt;dbl&gt;, DefRushingAvg &lt;dbl&gt;, DefRushingTD &lt;dbl&gt;,
+## #   DefPlays &lt;dbl&gt;, DefYards &lt;dbl&gt;, DefAvg &lt;dbl&gt;, DefFirstDownPass &lt;dbl&gt;,
+## #   DefFirstDownRush &lt;dbl&gt;, DefFirstDownPen &lt;dbl&gt;, DefFirstDownTotal &lt;dbl&gt;,
+## #   DefPenalties &lt;dbl&gt;, DefPenaltyYds &lt;dbl&gt;, DefFumbles &lt;dbl&gt;,
+## #   DefInterceptions &lt;dbl&gt;, DefTotalTurnovers &lt;dbl&gt;, Team &lt;chr&gt;,
+## #   Conference &lt;chr&gt;</code></pre>
+<p>Refer to the previous code description however, on this block then mutate the score using gsub. Take the parethesis and replace it with nothing in the Score column. This will remove the extra parethesis after the score.</p>
+<pre class="r"><code>logs %&gt;% separate(Result, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\(&quot;) %&gt;% 
+rename(&#39;Outcome&#39; = &#39;W&#39;, &#39;Score&#39; = &#39;L&#39;) %&gt;%
+mutate(Score=gsub(&quot;)&quot;, &quot;&quot;, Score)) %&gt;%
+head ()</code></pre>
+<pre><code>## # A tibble: 6 x 52
+##    Game Date  HomeAway Opponent Outcome Score PassingCmp PassingAtt PassingPct
+##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1     1 8/24~ N        Miami (~ &quot;W &quot;    24-20         17         27       63  
+## 2     2 9/7/~ &lt;NA&gt;     Tenness~ &quot;W &quot;    45-0          30         36       83.3
+## 3     3 9/14~ @        Kentucky &quot;W &quot;    29-21         21         30       70  
+## 4     4 9/21~ &lt;NA&gt;     Tenness~ &quot;W &quot;    34-3          24         34       70.6
+## 5     5 9/28~ &lt;NA&gt;     Towson   &quot;W &quot;    38-0          24         28       85.7
+## 6     6 10/5~ &lt;NA&gt;     Auburn   &quot;W &quot;    24-13         25         39       64.1
+## # ... with 43 more variables: PassingYds &lt;dbl&gt;, PassingTD &lt;dbl&gt;,
+## #   RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;, RushingTD &lt;dbl&gt;,
+## #   OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;, OffenseAvg &lt;dbl&gt;,
+## #   FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;, FirstDownPen &lt;dbl&gt;,
+## #   FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;, PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;,
+## #   Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;, TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;,
+## #   DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;, DefPassingPct &lt;dbl&gt;,
+## #   DefPassingYds &lt;dbl&gt;, DefPassingTD &lt;dbl&gt;, DefRushingAtt &lt;dbl&gt;,
+## #   DefRushingYds &lt;dbl&gt;, DefRushingAvg &lt;dbl&gt;, DefRushingTD &lt;dbl&gt;,
+## #   DefPlays &lt;dbl&gt;, DefYards &lt;dbl&gt;, DefAvg &lt;dbl&gt;, DefFirstDownPass &lt;dbl&gt;,
+## #   DefFirstDownRush &lt;dbl&gt;, DefFirstDownPen &lt;dbl&gt;, DefFirstDownTotal &lt;dbl&gt;,
+## #   DefPenalties &lt;dbl&gt;, DefPenaltyYds &lt;dbl&gt;, DefFumbles &lt;dbl&gt;,
+## #   DefInterceptions &lt;dbl&gt;, DefTotalTurnovers &lt;dbl&gt;, Team &lt;chr&gt;,
+## #   Conference &lt;chr&gt;</code></pre>
+<p>Refer to the previous code description. Name this code block ‘clean’. In this block, separate the numbers in the score column to W and L and do this by using the dash in between them. What is before the dash will be in the ‘W’ column and the numbers after the dash will be in the ‘L’ column. And then rename the W column ‘TeamScore’ and the L column ‘OpponentScore’.</p>
+<p>This separates puts the Team Score and Opponent Score in different columns and makes it easy to use when coding.</p>
+<pre class="r"><code>clean &lt;- logs %&gt;% separate(Result, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\(&quot;) %&gt;% 
+rename(&#39;Outcome&#39; = &#39;W&#39;, &#39;Score&#39; = &#39;L&#39;) %&gt;%
+mutate(Score=gsub(&quot;)&quot;, &quot;&quot;, Score)) %&gt;%
+separate(Score, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\-&quot;) %&gt;%
+rename(&#39;TeamScore&#39; = &#39;W&#39;, &#39;OpponentScore&#39; = &#39;L&#39;) %&gt;% mutate(TeamScore = as.numeric(TeamScore), OpponentScore = as.numeric(OpponentScore))</code></pre>
+<p>Create a new data frame called worsegames using the information from the clean data frame that was just created. And then create or mutate a new column titled ‘Differential’ which is TeamScore minus the OpponentScore. And then filter this by teams with differentials that are greater than 65 points.</p>
+<pre class="r"><code>worsegames &lt;- clean %&gt;% mutate(
+  Differential = TeamScore - OpponentScore) %&gt;%
+  filter(Differential &gt; 65)</code></pre>
+<p>With this information, let’s create a scatterplot to see what we’ve found. Create a chart with points from the clean data frame and plot the data of Team Score and Opponent Score on the x and y-axis, respectively. Make there points grey. Along with this, create a line with the same information. This line will illustrate the average of all the teams.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=clean, aes(x=TeamScore, y=OpponentScore), color=&#39;grey&#39;) +
+  geom_smooth(data=clean, aes(x=TeamScore, y=OpponentScore), method=&quot;lm&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/2021/03/29/worst-games-in-2019-college-football/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Now let’s highlight the worse games using that very data frame and making those points red.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=clean, aes(x=TeamScore, y=OpponentScore), color=&#39;grey&#39;) +
+  geom_smooth(data=clean, aes(x=TeamScore, y=OpponentScore), method=&quot;lm&quot;) +
+  geom_point(data=worsegames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/2021/03/29/worst-games-in-2019-college-football/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Because I’m going to used the geom encircle function, I’m uploading the ggalt library.</p>
+<pre class="r"><code>library(ggalt)</code></pre>
+<pre><code>## Warning: package &#39;ggalt&#39; was built under R version 4.0.4</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<p>The geom encircle will circle the worse games points and bring the attention right to the important part of the chart.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=clean, aes(x=TeamScore, y=OpponentScore), color=&#39;grey&#39;) +
+  geom_smooth(data=clean, aes(x=TeamScore, y=OpponentScore), method=&quot;lm&quot;) + 
+  geom_point(data=worsegames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +   geom_encircle(data=worsegames, aes(x=TeamScore, y=OpponentScore), s_shape=.05, expand=.02, colour=&quot;red&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/2021/03/29/worst-games-in-2019-college-football/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Lastly, add the labels of the title, subtitle, axises and caption. This chart sums up the entire project.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=clean, aes(x=TeamScore, y=OpponentScore), color=&#39;grey&#39;) +
+  geom_smooth(data=clean, aes(x=TeamScore, y=OpponentScore), method=&quot;lm&quot;) + 
+geom_point(data=worsegames, aes(x=TeamScore, y=OpponentScore), color=&quot;red&quot;) +   geom_encircle(data=worsegames, aes(x=TeamScore, y=OpponentScore), s_shape=.05, expand=.02, colour=&quot;red&quot;) + geom_text(aes(x=67, y=7, label=&quot;Worse Games&quot;)) + 
+  labs(title=&quot;The biggest blow outs in College Football&quot;, subtitle=&quot;Four FBS teams scored 75+ points and had less than 10 points scored on them.&quot;, x=&quot;Team Score&quot;, y=&quot;Opponent Score&quot;, caption = &quot;Source: Sports Reference | Chart by Abby Barmore&quot;) + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8), 
+    plot.subtitle = element_text(size=8), 
+    panel.grid.minor = element_blank()
+    )</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="/2021/03/29/worst-games-in-2019-college-football/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>There are four FBS games were one team absolutely dominated the other in the 2019 College Football season.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
