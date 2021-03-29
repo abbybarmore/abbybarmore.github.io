@@ -161,7 +161,7 @@ head ()</code></pre>
 ## #   Conference &lt;chr&gt;</code></pre>
 <p>Refer to the previous code description. Name this code block ‘clean’. In this block, separate the numbers in the score column to W and L and do this by using the dash in between them. What is before the dash will be in the ‘W’ column and the numbers after the dash will be in the ‘L’ column. And then rename the W column ‘TeamScore’ and the L column ‘OpponentScore’.</p>
 <p>This separates puts the Team Score and Opponent Score in different columns and makes it easy to use when coding.</p>
-<pre class="r"><code>clean &lt;- logs %&gt;% separate(Result, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\(&quot;) %&gt;% 
+<pre class="r"><code>clean &lt;- logs %&gt;% separate(Result, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\(&quot;) %&gt;%
 rename(&#39;Outcome&#39; = &#39;W&#39;, &#39;Score&#39; = &#39;L&#39;) %&gt;%
 mutate(Score=gsub(&quot;)&quot;, &quot;&quot;, Score)) %&gt;%
 separate(Score, into=c(&quot;W&quot;, &quot;L&quot;), sep=&quot;\\-&quot;) %&gt;%
