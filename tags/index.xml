@@ -5,6 +5,34 @@
     <link>/tags/</link>
     <description>Recent content in Tags on Abby Barmore&#39;s Github Site</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Fri, 02 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Big Ten</title>
+      <link>/tags/big-ten/</link>
+      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/big-ten/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>college football</title>
+      <link>/tags/college-football/</link>
+      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/college-football/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nebraska</title>
+      <link>/tags/nebraska/</link>
+      <pubDate>Fri, 02 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/nebraska/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

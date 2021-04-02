@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.81.0" />
+
+
+<title>Is Big Ten football more competitive in the Scott Frost era? - Abby Barmore&#39;s Github Site</title>
+<meta property="og:title" content="Is Big Ten football more competitive in the Scott Frost era? - Abby Barmore&#39;s Github Site">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/abbybarmore">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/abby_barmore">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">4 min read</span>
+    
+
+    <h1 class="article-title">Is Big Ten football more competitive in the Scott Frost era?</h1>
+
+    
+    <span class="article-date">2021-04-02</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Is Big Ten football, in general, more competitive in the Scott Frost Era?</p>
+<p>Since Nebraska joined the Big Ten in 2011, Bo Pelini is the only Husker head coach to win 10 or more games in a season and the only coach to win nine games in a season multiple times. When Pelini was fired after the 2014 season, ending his seven-season reign, Mike Riley was hired and went 19-19 in three seasons. NU brought in home-grown Husker, coach Scott Frost once it split ways with Riley in 2017. Frost’s team went 4-8 in his first season followed by a 5-7 record in 2019 and a 3-5 record in 2020.</p>
+<p>The Big Ten football landscape has change tremendously since 2011. How competitive was the Big Ten when Pelini was winning games this century? Riley? Frost? Was the league less competitive in the early 2010s than it is now? Essentially, is it harder for Frost to win games in this Big Ten climate compared the conference of the coaches before him?</p>
+<p>Let’s find out.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.0.5     v dplyr   1.0.3
+## v tidyr   1.1.2     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.0</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggrepel)</code></pre>
+<pre><code>## Warning: package &#39;ggrepel&#39; was built under R version 4.0.4</code></pre>
+<pre class="r"><code>football &lt;- read_csv(&#39;BigTenfootball2011-2020.csv&#39;)</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Team = col_character(),
+##   OverallW = col_double(),
+##   OverallL = col_double(),
+##   OverallPct = col_double(),
+##   ConW = col_double(),
+##   ConL = col_double(),
+##   ConPct = col_double(),
+##   PPGOff = col_double(),
+##   PPFDef = col_double(),
+##   SRS = col_double(),
+##   SOS = col_double(),
+##   `AP Pre` = col_double(),
+##   `AP High` = col_double(),
+##   `AP Rank` = col_double(),
+##   Season = col_double()
+## )</code></pre>
+<pre class="r"><code>BigTenindividual &lt;- football %&gt;% 
+  group_by(Team) %&gt;% 
+  mutate(CumSRS = cumsum(SRS))</code></pre>
+<pre class="r"><code>ggplot() + geom_step(data=BigTenindividual, aes(x=Season, y=CumSRS, group=Team, color=Team))</code></pre>
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>nu &lt;- BigTenindividual %&gt;% filter(Team == &quot;Nebraska&quot;) %&gt;% mutate(TeamYear = paste(Team, Season, sep=&quot; &quot;))
+osu &lt;- BigTenindividual %&gt;% filter(Team == &#39;Ohio State&#39;)
+up &lt;- BigTenindividual %&gt;% filter(Team == &#39;Purdue&#39;)</code></pre>
+<ul>
+<li>add to chart: better titles</li>
+</ul>
+<p>consider shrinking x and y axis labels to draw attention to team names</p>
+<p>why did I highlight Ohio State and Purdue (best and worst) consider Iowa and/or Wisconsin because NU is more similar and compared to them often.</p>
+<pre class="r"><code>ggplot() + 
+  geom_step(data=BigTenindividual, aes(x=Season, y=CumSRS, group=Team), color=&quot;light grey&quot;) +
+  geom_step(data=nu, aes(x=Season, y=CumSRS, group=Team), color=&quot;#E41C38&quot;) +
+  geom_step(data=osu, aes(x=Season, y=CumSRS, group=Team), color=&quot;black&quot;) +
+  geom_step(data=up, aes(x=Season, y=CumSRS, group=Team), color=&quot;#CEB888&quot;) +
+  geom_text(aes(x=2019.7, y=53, label=&quot;Nebraska&quot;)) +
+  geom_text(aes(x=2019.8, y=150, label=&quot;Ohio State&quot;)) +
+  geom_text(aes(x=2019.5, y=-50, label=&quot;Purdue&quot;)) +
+  labs(
+    x=&quot;Season&quot;, 
+    y=&quot;SRS&quot;, 
+    title=&quot;Big Ten&#39;s competition has progressively diversified each season&quot;, 
+    subtitle=&quot;Nebraska is on a slow climb&quot;, 
+    caption=&quot;Source: College Football Reference | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))</code></pre>
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>CHART 2 - LINE CHART</p>
+<p>I will show where Nebraska aligns with the rest of the Big Ten average for each season with a line chart</p>
+<pre class="r"><code>yearavg &lt;- read_csv(&#39;BigTenYear.csv&#39;)</code></pre>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   Year = col_double(),
+##   Conference = col_character(),
+##   Schs = col_double(),
+##   OverallW = col_double(),
+##   OverallL = col_double(),
+##   OverallT = col_double(),
+##   OverallPct = col_double(),
+##   BowlW = col_double(),
+##   BowlL = col_double(),
+##   BowlT = col_double(),
+##   BowlPct = col_double(),
+##   SRS = col_double(),
+##   SOS = col_double(),
+##   AP = col_double(),
+##   Champion = col_character()
+## )</code></pre>
+<pre class="r"><code>ggplot() + geom_line(data=football, aes(x=Season, y=SRS, group=Team), color=&#39;grey&#39;) +
+  scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))</code></pre>
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>ggplot() + geom_line(data=BigTenindividual, aes(x=Season, y=SRS, group=Team), color=&#39;grey&#39;) +
+  geom_line(data=nu, aes(x=Season, y=SRS, group=Team), color=&#39;#E41C38&#39;) +
+  geom_line(data=yearavg, aes(x=Year, y=SRS, group=Conference), color=&#39;black&#39;) +
+  theme_minimal() +
+  scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))</code></pre>
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Chart 3: I will show how each of Nebraska’s football teams have performed (W/L) compared to the Big Ten competition level during that season with a bubble chart. The x-axis will be the season years, the y-axis will be SRS of the Big Ten and the bubbles will be W/L for Nebraska.</p>
+<pre class="r"><code>ggplot() + geom_point(data=BigTenindividual, aes(x=SRS, y=SOS, size=ConW), color=&#39;grey&#39;) +
+  geom_point(data=nu, aes(x=SRS, y=SOS, size=ConW, color=&#39;Nebraska&#39;)) +
+  geom_text_repel(data=nu, aes(x=SRS, y=SOS, label=Season)) +
+  theme_minimal()</code></pre>
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
