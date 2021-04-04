@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">4 min read</span>
+    <span class="article-duration">7 min read</span>
     
 
     <h1 class="article-title">Is Big Ten football more competitive in the Scott Frost era?</h1>
@@ -76,9 +76,9 @@
 <script src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/header-attrs/header-attrs.js"></script>
 
 
-<p>Is Big Ten football, in general, more competitive in the Scott Frost Era?</p>
-<p>Since Nebraska joined the Big Ten in 2011, Bo Pelini is the only Husker head coach to win 10 or more games in a season and the only coach to win nine games in a season multiple times. When Pelini was fired after the 2014 season, ending his seven-season reign, Mike Riley was hired and went 19-19 in three seasons. NU brought in home-grown Husker, coach Scott Frost once it split ways with Riley in 2017. Frost’s team went 4-8 in his first season followed by a 5-7 record in 2019 and a 3-5 record in 2020.</p>
-<p>The Big Ten football landscape has change tremendously since 2011. How competitive was the Big Ten when Pelini was winning games this century? Riley? Frost? Was the league less competitive in the early 2010s than it is now? Essentially, is it harder for Frost to win games in this Big Ten climate compared the conference of the coaches before him?</p>
+<p>Is Big Ten football more competitive in the Scott Frost Era than the Bo Pelini Era?</p>
+<p>Since Nebraska joined the Big Ten in 2011, Pelini is the only Husker head coach to win 10 or more games in a season and the only coach to win nine games in a season multiple times. When Pelini’s seven-season reign was ended after the 2014 season, Mike Riley was hired and went 19-19 in three seasons. NU brought in home-grown Husker, coach Scott Frost, once it parted ways with Riley in 2017. Frost’s team went 4-8 in his first season followed by a 5-7 record in 2019 and a 3-5 record in 2020.</p>
+<p>The Big Ten football landscape has changed tremendously since 2011. How competitive was the Big Ten when Pelini was winning games this century? Riley? Frost? Was the league less competitive in the early 2010s than it is now? Essentially, is it harder for Frost to win games in this Big Ten climate compared the conference of the coaches before him?</p>
 <p>Let’s find out.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
@@ -91,7 +91,16 @@
 ## x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggrepel)</code></pre>
 <pre><code>## Warning: package &#39;ggrepel&#39; was built under R version 4.0.4</code></pre>
-<pre class="r"><code>football &lt;- read_csv(&#39;BigTenfootball2011-2020.csv&#39;)</code></pre>
+<pre class="r"><code>library(ggalt)</code></pre>
+<pre><code>## Warning: package &#39;ggalt&#39; was built under R version 4.0.4</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<pre class="r"><code>teamindividual &lt;- read_csv(&#39;BigTenfootball2011-2020.csv&#39;)</code></pre>
 <pre><code>## 
 ## -- Column specification --------------------------------------------------------
 ## cols(
@@ -111,38 +120,6 @@
 ##   `AP Rank` = col_double(),
 ##   Season = col_double()
 ## )</code></pre>
-<pre class="r"><code>BigTenindividual &lt;- football %&gt;% 
-  group_by(Team) %&gt;% 
-  mutate(CumSRS = cumsum(SRS))</code></pre>
-<pre class="r"><code>ggplot() + geom_step(data=BigTenindividual, aes(x=Season, y=CumSRS, group=Team, color=Team))</code></pre>
-<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>nu &lt;- BigTenindividual %&gt;% filter(Team == &quot;Nebraska&quot;) %&gt;% mutate(TeamYear = paste(Team, Season, sep=&quot; &quot;))
-osu &lt;- BigTenindividual %&gt;% filter(Team == &#39;Ohio State&#39;)
-up &lt;- BigTenindividual %&gt;% filter(Team == &#39;Purdue&#39;)</code></pre>
-<ul>
-<li>add to chart: better titles</li>
-</ul>
-<p>consider shrinking x and y axis labels to draw attention to team names</p>
-<p>why did I highlight Ohio State and Purdue (best and worst) consider Iowa and/or Wisconsin because NU is more similar and compared to them often.</p>
-<pre class="r"><code>ggplot() + 
-  geom_step(data=BigTenindividual, aes(x=Season, y=CumSRS, group=Team), color=&quot;light grey&quot;) +
-  geom_step(data=nu, aes(x=Season, y=CumSRS, group=Team), color=&quot;#E41C38&quot;) +
-  geom_step(data=osu, aes(x=Season, y=CumSRS, group=Team), color=&quot;black&quot;) +
-  geom_step(data=up, aes(x=Season, y=CumSRS, group=Team), color=&quot;#CEB888&quot;) +
-  geom_text(aes(x=2019.7, y=53, label=&quot;Nebraska&quot;)) +
-  geom_text(aes(x=2019.8, y=150, label=&quot;Ohio State&quot;)) +
-  geom_text(aes(x=2019.5, y=-50, label=&quot;Purdue&quot;)) +
-  labs(
-    x=&quot;Season&quot;, 
-    y=&quot;SRS&quot;, 
-    title=&quot;Big Ten&#39;s competition has progressively diversified each season&quot;, 
-    subtitle=&quot;Nebraska is on a slow climb&quot;, 
-    caption=&quot;Source: College Football Reference | Chart by Abby Barmore&quot;) +
-  theme_minimal() +
-scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))</code></pre>
-<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>CHART 2 - LINE CHART</p>
-<p>I will show where Nebraska aligns with the rest of the Big Ten average for each season with a line chart</p>
 <pre class="r"><code>yearavg &lt;- read_csv(&#39;BigTenYear.csv&#39;)</code></pre>
 <pre><code>## 
 ## -- Column specification --------------------------------------------------------
@@ -163,21 +140,91 @@ scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 20
 ##   AP = col_double(),
 ##   Champion = col_character()
 ## )</code></pre>
-<pre class="r"><code>ggplot() + geom_line(data=football, aes(x=Season, y=SRS, group=Team), color=&#39;grey&#39;) +
+<p>The two data sets I will be working with show each Big Ten team’s statistics for every season since 2011 from Sports Reference’s college football site. The other set has the average metrics for the conference as a whole. For both I will mostly be using Simple Rating System (SRS), the Strength of Schedule (SOS) and how many conference games each team won.</p>
+<p>First, I’m creating a new data frame to group each team by its cumulative simple rating sum.</p>
+<pre class="r"><code>teamseason &lt;- teamindividual %&gt;% 
+  group_by(Team) %&gt;% 
+  mutate(CumSRS = cumsum(SRS))</code></pre>
+<p>I’m interested in looking at the progression of each Big Ten teams’ simple rating for each season to see how the competition in the conference has changed over the decade. Who are the best and worst teams throughout the decade and how has Nebraska advanced since each head coach was at the reins?</p>
+<pre class="r"><code>nu &lt;- teamseason %&gt;% filter(Team == &quot;Nebraska&quot;) %&gt;% mutate(TeamYear = paste(Team, Season, sep=&quot; &quot;))
+osu &lt;- teamseason %&gt;% filter(Team == &#39;Ohio State&#39;)
+up &lt;- teamseason %&gt;% filter(Team == &#39;Purdue&#39;)</code></pre>
+<p>I want to highlight the Huskers, Ohio State because its consistently the best team in the league and the worst team of the decade, Purdue. The chart will show each teams simple rating score during each season since 2011.</p>
+<pre class="r"><code>ggplot() + 
+  geom_step(data=teamseason, aes(x=Season, y=CumSRS, group=Team), color=&quot;light grey&quot;) +
+  geom_step(data=nu, aes(x=Season, y=CumSRS, group=Team), color=&quot;#E41C38&quot;) +
+  geom_step(data=osu, aes(x=Season, y=CumSRS, group=Team), color=&quot;black&quot;) +
+  geom_step(data=up, aes(x=Season, y=CumSRS, group=Team), color=&quot;#CEB888&quot;) +
+  geom_text(aes(x=2019.5, y=54, label=&quot;Nebraska&quot;)) +
+  geom_text(aes(x=2019.6, y=150, label=&quot;Ohio State&quot;)) +
+  geom_text(aes(x=2019.5, y=-46, label=&quot;Purdue&quot;)) +
+  labs(
+    x=&quot;Season&quot;, 
+    y=&quot;Cumulative Simple Rating&quot;, 
+    title=&quot;Big Ten football competition has diversified since 2011&quot;, 
+    subtitle=&quot;Nebraska&#39;s simple rating is on a slow climb&quot;, 
+    caption=&quot;Source: College Football Reference | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=11), 
+    panel.grid.minor = element_blank()) +
   scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))</code></pre>
-<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<pre class="r"><code>ggplot() + geom_line(data=BigTenindividual, aes(x=Season, y=SRS, group=Team), color=&#39;grey&#39;) +
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Right away, we notice that team’s cumulative simple ratings were very similar in 2011 but the good and the bad teams continued to get better and better at what they do best. For Ohio State, that is winning and for Purdue that is losing games. NU’s cumulative simple rating has improved each season but only slightly in the Frost Era. Based on this rating, it seems that Pelini’s teams improved the most from season to season compared to Riley’s and Frost’s.</p>
+<p>Now we know how the Big Ten’s competitiveness has changed since Nebraska joined. How competitive was the Big Ten when Nebraska was winning 9-10 games with Pelini versus when Riley and Frost were/are struggling to break even? For this, I am going to create a line chart to highlight and compare Nebraska’s simple rating with the average Big Ten rating from the yearavg data frame.</p>
+<pre class="r"><code>ggplot() + 
+  geom_line(data=teamindividual, aes(x=Season, y=SRS, group=Team), color=&#39;grey&#39;) +
   geom_line(data=nu, aes(x=Season, y=SRS, group=Team), color=&#39;#E41C38&#39;) +
   geom_line(data=yearavg, aes(x=Year, y=SRS, group=Conference), color=&#39;black&#39;) +
+  geom_text(aes(x=2018.5, y=2, label=&quot;Nebraska&quot;)) +
+  geom_text(aes(x=2017, y=11, label=&quot;Big Ten&quot;)) +
+  labs(
+    x=&quot;Season&quot;, 
+    y=&quot;Simple rating&quot;, 
+    title=&quot;Scott Frost&#39;s Big Ten is more competitive than Bo Pelini&#39;s&quot;, 
+    subtitle=&quot;Nebraska was performing above the average simple rating until 2017.&quot;, 
+    caption=&quot;Source: College Football Reference | Chart by Abby Barmore&quot;) +
   theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=11), 
+    panel.grid.minor = element_blank()
+    ) +
   scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020))</code></pre>
-<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Chart 3: I will show how each of Nebraska’s football teams have performed (W/L) compared to the Big Ten competition level during that season with a bubble chart. The x-axis will be the season years, the y-axis will be SRS of the Big Ten and the bubbles will be W/L for Nebraska.</p>
-<pre class="r"><code>ggplot() + geom_point(data=BigTenindividual, aes(x=SRS, y=SOS, size=ConW), color=&#39;grey&#39;) +
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>The Big Ten average is much higher in 2017-2020 seasons compared to when Pelini was coaching NU in the Big Ten from 2011-2014. The 2012 season is Nebraska’s most successful season this decade based on their record (10-4 and 7-1 in the Big Ten) and the second highest simple rating (behind 2014) since the Huskers joined the conference. Pelini’s most successful season was also the Big Ten’s least competitive season this decade.</p>
+<p>While NU played below the Big Ten’s average in the 2017-2020 seasons starting with Riley in 2017, the 2017 season’s competition was about four points better than in 2012. Frost’s teams have a tougher Big Ten to compete in but are playing far below the simple rating average for the conference.</p>
+<p>How much of the Big Ten’s competitive level effects NU’s win/loss record? In other words, how many conference games is NU winning based on how tough their competition is?</p>
+<p>I will show how each of Nebraska’s football teams have performed based on conference wins compared to the Big Ten competition level (SRS) and strength of schedule (SOS) during an individual season with a bubble chart.</p>
+<pre class="r"><code>Frostseasons &lt;- nu %&gt;% filter(Season == &#39;2018&#39; | Season == &#39;2019&#39; | Season == &#39;2020&#39;)</code></pre>
+<p>First, I created a new data frame with only Frost’s season in it to bring attention to them by using geom_encircle. Nebraska’s bubbles are highlighted and the year is included to provide perspective on which team/coach was at the helm.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=teamindividual, aes(x=SRS, y=SOS, size=ConW), color=&#39;grey&#39;) +
   geom_point(data=nu, aes(x=SRS, y=SOS, size=ConW, color=&#39;Nebraska&#39;)) +
   geom_text_repel(data=nu, aes(x=SRS, y=SOS, label=Season)) +
-  theme_minimal()</code></pre>
-<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+  geom_encircle(data=Frostseasons, aes(x=SRS, y=SOS), s_shape=.05, expand=.04, colour=&quot;#E41C38&quot;) +
+  labs(
+    x=&quot;Simple Rating&quot;, 
+    y=&quot;Strength of Schedule&quot;, 
+    title=&quot;Scott Frost&#39;s three seasons have among the hardest schedules \nin the decade&quot;, 
+    subtitle=&quot;Under Frost, the Huskers had average simple ratings but also had the toughest schedules.&quot;, 
+    caption=&quot;Source: College Football Reference | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9), 
+    plot.subtitle = element_text(size=11), 
+    panel.grid.minor = element_blank()) +
+  scale_size(range = c(0, 8), name=&quot;Conf. Wins&quot;, breaks=c(0,2,4,6,8)) +   
+  scale_color_manual(values=c(&quot;#E41C38&quot;))</code></pre>
+<p><img src="/2021/04/02/is-big-ten-football-more-competitive-in-the-scott-frost-era/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>As we can see, Frost was dealt three of the four hardest schedules in Nebraska football this decade but his teams performed averagely. Pelini’s teams had higher simple ratings than Frost’s and Riley’s but easier schedules.</p>
+<p>The 2012 season had the third highest strength of schedule and had the second highest simple rating after 2014 which had an easier schedule.</p>
+<p>While Frost’s teams aren’t playing and/or winning at the same level Pelini’s were, the Big Ten Conference is more competitive now than it was during Pelini’s time at NU. Frost has had much more difficult schedules because the competition is stronger and better overall.</p>
+<p>Frost has a harder conference than Pelini did and Nebraska will have to battle harder to become a 9+ win team in the Big Ten Conference of today.</p>
 
     </div>
   </article>
@@ -214,6 +261,9 @@ scale_x_continuous(breaks = c(2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 20
 
 
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>
