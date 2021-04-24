@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.81.0" />
+
+
+<title>Did the age of a team impact its success in the 2020 season? - Abby Barmore&#39;s Github Site</title>
+<meta property="og:title" content="Did the age of a team impact its success in the 2020 season? - Abby Barmore&#39;s Github Site">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/abbybarmore">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/abby_barmore">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">10 min read</span>
+    
+
+    <h1 class="article-title">Did the age of a team impact its success in the 2020 season?</h1>
+
+    
+    <span class="article-date">2021-04-24</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>Nebraska head coach Scott Frost walked up to the podium to kickoff spring football with a Zoom media conference following a disappointing 3-5 season. And just like every spring Frost has been at the helm, he was positive and excited about getting to work and the clay his staff has to mold.</p>
+<p>He said something that caught my ear and got my wheels turning.</p>
+<p>“In my opinion, it’s played out in college football, and probably college basketball, that through the COVID year the teams that had veteran players probably overachieved a little,” Frost said on March 29. “And anybody that was breaking in new players, generally speaking, underachieving a little bit. That makes sense when you have fewer opportunities with your guys, fewer chances to get everybody on the same page and get real practice reps and preseason reps.”</p>
+<p>Could it be true that the circumstances of the pandemic canceling spring, summer and fall football practice and conditioning allowed veteran teams to win more games than projected? In other words, did the older rosters in FBS perform better than expected in 2020? Did the younger teams play below their expectations?</p>
+<p>Let’s find out.</p>
+<pre class="r"><code>library(tidyverse)
+library(ggalt)</code></pre>
+<p>After loading my libraries, I uploaded a data frame called players which includes the rosters of all 130 FBS – each player, their school and most importantly, their year in school.</p>
+<p>The second data frame, OldestYoungest, I created using 2020 game projections from BCF Toys to record how many games it projected each team to win. I then used sports reference to add a column of the number of games the team actually won. I included information that I calculated below and will explain when we arrive there.</p>
+<pre class="r"><code>players &lt;- read_csv(&#39;FBSplayers2020.csv&#39;) %&gt;% na.omit() %&gt;% mutate(Year = as.numeric(Year))
+OldestYoungest &lt;- read_csv(&#39;20OldestYoungestFBSTeams.csv&#39;)</code></pre>
+<p>Something to keep in mind is that this data does not account for transfers. A student-athlete could transfer to a school and be classified as a junior or senior but is new to the school, its system and has to be ‘broken in’ like Frost mentioned.</p>
+<p>For this data, I only want players who are contributing to the success or failure of team so I filter out all of the players who haven’t played a game.</p>
+<pre class="r"><code>playersage &lt;- players %&gt;%
+  filter(GP &gt; 0)</code></pre>
+<p>I want to find the 10 oldest and 10 youngest rosters in FBS to examine their performance in 2020. To do this, I calculate the average age of each team in FBS. I group by the team and then find the average ‘year’ of the players on the team’s roster and call this data frame ‘TeamAge’.</p>
+<pre class="r"><code>TeamAge &lt;- playersage %&gt;%
+  group_by(Team) %&gt;%
+  summarize(AvgTeamAge = mean(Year)) %&gt;%
+  arrange(desc(AvgTeamAge))</code></pre>
+<p>Before we can put the average team age to use, I need to classify the first and second year players as ‘underclassmen’ and third and fourth year players as ‘upperclassmen’. The teams with a higher number of underclassmen are younger and same with the majority of the roster being upperclassmen will be older.</p>
+<p>Below, ‘teamclass’ calculates the number of upper and underclassmen by team to help find the youngest and oldest teams.</p>
+<pre class="r"><code>playersage %&gt;%
+  mutate(Class = case_when(
+    Year &lt;=2 ~ &quot;Underclassmen&quot;,
+    Year &gt; 2 ~ &quot;Upperclassmen&quot;
+  )) %&gt;% 
+  group_by(Team, Class) %&gt;%
+  tally() -&gt; teamclass</code></pre>
+<p>Using the ‘teamclass’ data frame, I find the top 10 teams with the most upperclassmen (‘upper’) and the top 10 teams with the most underclassmen (‘under’). I will refer to the list as the top 20 to clean things up.</p>
+<pre class="r"><code>upper &lt;- teamclass %&gt;%
+  ungroup() %&gt;% 
+  filter(Class == &quot;Upperclassmen&quot;) %&gt;%
+  arrange(desc(n)) %&gt;%
+  top_n(10, wt=n)</code></pre>
+<pre class="r"><code>under &lt;- teamclass %&gt;%
+  ungroup() %&gt;%
+  filter(Class == &quot;Underclassmen&quot;) %&gt;%
+  arrange(desc(n)) %&gt;%
+  top_n(10, wt=n)</code></pre>
+<p>In the previously mentioned ‘OldestYoungest’ data frame, I only included the information from the top 20 teams that were just calculated. I also included the average age for each team found in the ‘TeamAge’ data frame.</p>
+<p>The ‘under’ data frame tells us Akron had the youngest team on average in FBS in 2020. We know they have 58 underclassmen but compared to how many upperclassmen? In fact, how many upper and underclassmen does each of the top 20 teams have?</p>
+<p>‘understacked’ and ‘upperstacked’ take each of the top 10 teams and adds both types of ’classman.</p>
+<pre class="r"><code>understacked &lt;- teamclass %&gt;%
+  filter(Team %in% under$Team)
+
+upperstacked &lt;- teamclass %&gt;%
+  filter(Team %in% upper$Team)</code></pre>
+<p>Now we can use all of this information to generate a stacked bar chart to visually see the ratio of the number of under and upperclassmen each team has.</p>
+<p>First the 10 youngest rosters. I fill the bar based on upper and underclassmen for each team and the number of players on the x-axis, along with the number of ’classmen.</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=arrange(understacked, Class), aes(x=reorder(Team, n), weight=n, fill=Class)) +
+ coord_flip() +
+  labs(
+    x=&quot;Team&quot;,
+    y=&quot;Roster Size&quot;,
+    title=&quot;Clemson has the youngest FBS team in 2020&quot;,
+    subtitle=&quot;Watch out for the Tigers for years to come&quot;,
+    caption=&quot;Source: NCAA Statistics | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9),
+    plot.subtitle = element_text(size=9),
+    panel.grid.minor = element_blank()
+    ) +
+  scale_fill_manual(values=c(&quot;#66CD00&quot;, &quot;#89CFF0&quot;))</code></pre>
+<p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+While Akron has the youngest team based on average, Clemson has the largest number of underclassmen. Clemson is loosing their star quarterback Trevor Lawrence but have a lot of young talent to help them sustain the program’s success for years to come.</p>
+<p>So what’s up with the oldest teams in FBS?</p>
+<pre class="r"><code>ggplot() +
+  geom_bar(data=arrange(upperstacked, Class), aes(x=reorder(Team, n), weight=n, fill=Class)) +
+ coord_flip() +
+  labs(
+    x=&quot;Team&quot;, 
+    y=&quot;Roster Size&quot;, 
+    title=&quot;Top 3 oldest FBS teams were successful in 2020&quot;, 
+    subtitle=&quot;Notre Dame, Louisiana won 10 games. OSU runner-up in CFP&quot;, 
+    caption=&quot;Source: NCAA Statistics | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9), 
+    plot.subtitle = element_text(size=9), 
+    panel.grid.minor = element_blank()
+    ) + 
+  scale_fill_manual(values=c(&quot;#66CD00&quot;, &quot;#89CFF0&quot;))</code></pre>
+<p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Right away, we notice that Notre Dame, Louisiana and Ohio State are at the top of the list. All three of these teams had a really good year. Notre Dame, who is typically in the top 10 in the AP Poll, beat powerhouse Clemson once and won nine games. The Ragin’ Cajuns shooked college football with 10 wins and a No. 15 finish in the AP Poll. No. 2 Ohio State was beat in the National Championship by Alabama.</p>
+<p>Now that we know the top 10 oldest and youngest team, did they over or underpreform in 2020? I’ll look at the projected wins of each team along with their actual wins to see how they performed in a dumbbell chart.</p>
+<p>First, I create two data frames. One filters out the ten youngest teams and the other filters out the ten oldest teams.</p>
+<pre class="r"><code>OldestYoungest %&gt;% 
+  filter(Team == &quot;Akron&quot; | Team == &quot;Clemson&quot; | Team == &quot;Florida State&quot; | Team == &quot;East Carolina&quot; | Team == &quot;Wake Forest&quot; | Team == &quot;North Carolina&quot; | Team == &quot;Louisiana Tech&quot; | Team == &quot;TCU&quot; | Team == &quot;Middle Tennessee&quot; | Team == &quot;Army&quot;) -&gt; TenYoungest</code></pre>
+<pre class="r"><code>OldestYoungest %&gt;% 
+  filter(Team == &quot;Notre Dame&quot; | Team == &quot;Louisiana&quot; | Team == &quot;Ohio State&quot; | Team == &quot;UTEP&quot; | Team == &quot;Vanderbilt&quot; | Team == &quot;Houston&quot; | Team == &quot;Texas State&quot; | Team == &quot;Rutgers&quot; | Team == &quot;Ohio&quot; | Team == &quot;Navy&quot;) -&gt; TenOldest</code></pre>
+<p>Now, I generate a dumbbell chart using the ‘TenYoungest’ data frame and put the team on the y-axis, projected win on the x-axis and actual win also on the x-axis. The projected wins are in red and the actual wins are in green.</p>
+<pre class="r"><code>ggplot() + 
+  geom_dumbbell(
+    data= TenYoungest,
+    aes(y=Team, x=`Projected Win`, xend=`Actual Win`),
+    size = 1,
+    colour = &quot;grey&quot;,
+    colour_x = &quot;red&quot;,
+    colour_xend = &quot;green&quot;) +
+  labs(
+    x=&quot;Projected vs. Actual Wins&quot;, 
+    y=&quot;Team&quot;, 
+    title=&quot;10 youngest FBS teams in 2020 overachieved\nor performed as expected&quot;, 
+    subtitle=&quot;Louisiana Tech and East Carolina won 3 more games than projected (red), 5 teams actually\nwon (green) the games they were projected to win&quot;, 
+    caption=&quot;Source: BCF Toys, Sports Reference | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9), 
+    plot.subtitle = element_text(size=9), 
+    panel.grid.minor = element_blank()
+    ) +
+  scale_x_continuous(breaks = c(2, 4, 6, 8, 10))</code></pre>
+<p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+All of the youngest teams in 2020 overachieved or achieved as expected, which is contrary to what Frost thought.</p>
+<p>It is important to keep in mind that it’s possible for a team to lose a game they were projected to win and vice versa. However, they could pick up a win that was projected to be a loss. This means they could overachieve in one game and/or underachieve in the next. This data does not factor that in.</p>
+<p>If the younger teams are overachieving, is it possible that the older teams are underachieving in the COVID season? Here is another dumbbell chart with the ten oldest team’s data.</p>
+<pre class="r"><code>ggplot() + 
+  geom_dumbbell(
+    data= TenOldest,
+    aes(y=Team, x=`Projected Win`, xend=`Actual Win`),
+    size = 1,
+    colour = &quot;grey&quot;,
+    colour_x = &quot;red&quot;,
+    colour_xend = &quot;green&quot;) +
+  labs(
+    x=&quot;Projected vs. Actual Wins&quot;, 
+    y=&quot;Team&quot;, 
+    title=&quot;No pattern in the 10 oldest FBS teams in 2020&quot;, 
+    subtitle=&quot;4 teams actually won (green) more games than projected (red), 3 teams underperformed,\n3 performed as expected&quot;, 
+    caption=&quot;Source: BCF Toys, Sports Reference | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9), 
+    plot.subtitle = element_text(size=9), 
+    panel.grid.minor = element_blank()
+    ) +
+  scale_x_continuous(breaks = c(2, 4, 6, 8, 10))</code></pre>
+<p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>All three possibilities (underperform, overperform and perform as expected) are represented at an almost even rate. This brings me to the conclusion that the age of the team has no correlation to the success (or lack there of) of a team in 2020.</p>
+<p>To be sure, I am going to create a bubble chart to compare projected wins, actual wins and the average age of the team.</p>
+<p>There are a few specific teams I want to look at. The best and more high profile teams: Ohio State, Notre Dame and Clemson. Along with Ohio, the oldest team, and Akron, the youngest.</p>
+<pre class="r"><code>osu &lt;- OldestYoungest %&gt;% 
+  filter(Team == &#39;Ohio State&#39;)
+
+ND &lt;- OldestYoungest %&gt;% 
+  filter(Team == &#39;Notre Dame&#39;)
+
+ohio &lt;- OldestYoungest %&gt;% 
+  filter(Team == &#39;Ohio&#39;)
+
+akron &lt;- OldestYoungest %&gt;% 
+  filter(Team == &#39;Akron&#39;)
+
+cu &lt;- OldestYoungest %&gt;% 
+  filter(Team == &#39;Clemson&#39;)</code></pre>
+<p>I use the OldestYoungest data frama for this chart and plot projected win on the x-axis, actual win on the y-axis and have the average team age be the size of the bubbles. The five teams that I want to highlight will identified by the bubble’s color and labeled.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=OldestYoungest, aes(x=`Projected Win`, y=`Actual Win`, size=AverageAge), color=&#39;grey&#39;) +
+  geom_point(data=osu, aes(x=`Projected Win`, y=`Actual Win`, size=AverageAge), color=&quot;#bb0000&quot;) +
+  geom_point(data=ND, aes(x=`Projected Win`, y=`Actual Win`, size=AverageAge), color=&quot;#c99700&quot;) +
+  geom_point(data=ohio, aes(x=`Projected Win`, y=`Actual Win`, size=AverageAge), color=&quot;#00694E&quot;) +
+  geom_point(data=cu, aes(x=`Projected Win`, y=`Actual Win`, size=AverageAge), color=&quot;#F56600&quot;) +
+  geom_point(data=akron, aes(x=`Projected Win`, y=`Actual Win`, size=AverageAge), color=&quot;#041E42&quot;) +
+  geom_text(aes(x=7, y=6.4, label=&quot;Ohio State&quot;)) +
+  geom_text(aes(x=8.15, y=9.5, label=&quot;Notre Dame&quot;)) +
+  geom_text(aes(x=3, y=1.4, label=&quot;Ohio&quot;)) +
+  geom_text(aes(x=9.9, y=9.5, label=&quot;Clemson&quot;)) +
+  geom_text(aes(x=1, y=1.50, label=&quot;Akron&quot;)) +
+  labs(
+    x=&quot;Projected Wins&quot;, 
+    y=&quot;Actual Wins&quot;, 
+    title=&quot;Top 10 youngest FBS teams in 2020 overachieved\ndespite inexperience&quot;, 
+    subtitle=&quot;Of the top 10 oldest teams some overachieved, some underachieved&quot;, 
+    caption=&quot;Source: BCF Toys, Sports Reference | Chart by Abby Barmore&quot;) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    ) +
+  scale_x_continuous(breaks = c(2, 4, 6, 8, 10)) +
+  scale_y_continuous(breaks = c(2, 4, 6, 8, 10))</code></pre>
+<p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>This chart allows us to look at the older teams or larger bubbles and see how they performed based on their projected wins and actual wins. The younger teams or smaller bubbles preformed better on average as it relates to their projected wins.</p>
+<p>We can conclude the age of a team did not relate to whether it under or overachieved in 2020.</p>
+<p>Sorry, Frost.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
