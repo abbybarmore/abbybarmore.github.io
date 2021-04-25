@@ -176,7 +176,7 @@ While Akron has the youngest team based on average, Clemson has the largest numb
   geom_dumbbell(
     data= TenYoungest,
     aes(y=Team, x=`Projected Win`, xend=`Actual Win`),
-    size = 1,
+    size = 1.4,
     colour = &quot;grey&quot;,
     colour_x = &quot;red&quot;,
     colour_xend = &quot;green&quot;) +
@@ -202,7 +202,7 @@ All of the youngest teams in 2020 overachieved or achieved as expected, which is
   geom_dumbbell(
     data= TenOldest,
     aes(y=Team, x=`Projected Win`, xend=`Actual Win`),
-    size = 1,
+    size = 1.4,
     colour = &quot;grey&quot;,
     colour_x = &quot;red&quot;,
     colour_xend = &quot;green&quot;) +
@@ -222,7 +222,7 @@ All of the youngest teams in 2020 overachieved or achieved as expected, which is
   scale_x_continuous(breaks = c(2, 4, 6, 8, 10))</code></pre>
 <p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>All three possibilities (underperform, overperform and perform as expected) are represented at an almost even rate. This brings me to the conclusion that the age of the team has no correlation to the success (or lack there of) of a team in 2020.</p>
-<p>To be sure, I am going to create a bubble chart to compare projected wins, actual wins and the average age of the team.</p>
+<p>To be sure, I created a bubble chart to compare projected wins, actual wins and the average age of the team.</p>
 <p>There are a few specific teams I want to look at. The best and more high profile teams: Ohio State, Notre Dame and Clemson. Along with Ohio, the oldest team, and Akron, the youngest.</p>
 <pre class="r"><code>osu &lt;- OldestYoungest %&gt;% 
   filter(Team == &#39;Ohio State&#39;)
@@ -268,7 +268,7 @@ cu &lt;- OldestYoungest %&gt;%
   scale_y_continuous(breaks = c(2, 4, 6, 8, 10))</code></pre>
 <p><img src="/2021/04/24/did-the-age-of-a-team-impact-its-success-in-the-2020-season/index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>This chart allows us to look at the older teams or larger bubbles and see how they performed based on their projected wins and actual wins. The younger teams or smaller bubbles preformed better on average as it relates to their projected wins.</p>
-<p>We can conclude the age of a team did not relate to whether it under or overachieved in 2020.</p>
+<p>Based on the previous data, we can conclude the age of a team did not relate to whether it under or overachieved in 2020 because of the randomness of the season’s results.</p>
 <p>Sorry, Frost.</p>
 
     </div>
